@@ -3,29 +3,78 @@ const Disciplina = require("../models/disciplinaModel");
 
 ///////////////////////////////////////////////////////////
 
+const mongoose = require('mongoose');
+const Turma = require('../models/turmaModel');
+const Disciplina = require('../models/disciplinaModel');
+
 exports.createTurma = async (req, res) => {
-    const { nome, disciplinas, turno } = req.body; 
+    const { nome, disciplinas, turno } = req.body;
 
     try {
+        
         const turmaExistente = await Turma.findOne({ nome });
 
         if (turmaExistente) {
             return res.status(400).json({ message: "Turma já existe." });
         }
-        const novaTurma = new Turma({ nome, disciplinas, turno });
-       
+
+        // Array para armazenar os IDs das disciplinas
+        let disciplinaIds = [];
+
+        // Processa cada disciplina no array de disciplinas
+        for (let disciplina of disciplinas) {
+            let disciplinaId;
+
+            
+            if (mongoose.Types.ObjectId.isValid(disciplina)) {
+                disciplinaId = disciplina;
+            } else {
+               
+                const disciplinaQuery = await Disciplina.findOne({ nome: disciplina });
+
+                
+                if (!disciplinaQuery) {
+                    return res.status(404).json({
+                        status: "fail",
+                        message: `Disciplina não encontrada: ${disciplina}`
+                    });
+                }
+
+                
+                disciplinaId = disciplinaQuery._id;
+            }
+
+            
+            disciplinaIds.push(disciplinaId);
+        }
+
+        
+        const novaTurma = new Turma({
+            nome,
+            disciplinas: disciplinaIds, 
+            turno
+        });
+
+        
         const turmaSalva = await novaTurma.save();
 
+        
         res.status(201).json({
-            status: "sucess",
-            message: "Turma criada com Sucesso!",
+            status: "success",
+            message: "Turma criada com sucesso!",
             data: { turma: turmaSalva }
-        })
+        });
+
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Erro ao cadastrar Turma. Tente novamente." }); 
+        res.status(500).json({
+            status: "Internal Server Error",
+            message: "Erro ao cadastrar Turma. Tente novamente.",
+            error: err.message
+        });
     }
 };
+
 
 exports.getAllTurmas = async (req, res) => {
     try {

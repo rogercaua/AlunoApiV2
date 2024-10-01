@@ -41,9 +41,9 @@ exports.criarAviso = async (req, res) => {
         
         let disciplinaQuery = Disciplina.findOne({ nome: disciplina });
         
-        if(!turmaQuery)res.status(404).json({status: "fail", message: "Turma não encontrada."})
+        if(!disciplinaQuery)res.status(404).json({status: "fail", message: "Disciplina não encontrada"})
         
-        turmaId = turmaQuery._id;          
+        disciplinaId = disciplinaQuery._id;          
 
       } 
 

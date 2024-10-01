@@ -6,42 +6,67 @@ const Turma = require("../models/turmaModel");
 exports.createAluno = async (req, res) => {
   const { nome, email, senha, turma } = req.body;
 
+  if (!nome || !email || !senha || !turma) {
+    return res.status(400).json({
+      status: "fail",
+      message: "Nome, email, turma e senha são obrigatórios."
+    });
+  }
+
   try {
-    const turmaEncontrada = await Turma.findById(turma);
-    if (!turmaEncontrada) {
-      return res.status(404).json({ message: "Turma não encontrada." });
+
+    let turmaId;
+
+    if(mongoose.Types.ObjectId.isValid(turma)) {
+      turmaId = turma;
+
+    } else{
+      let turmaQuery = Turma.findOne({ nome: turma });
+
+      if(!turmaQuery)res.status(404).json({status: "fail", message: "Turma não encontrada."});
+
+      turmaId = turmaQuery._id;
+
     }
 
-  
+
+    
     const novoAluno = new Aluno({
       nome,
       email,
       senha,
-      turma,
+      turmaId,
       notas: turmaEncontrada.disciplinas.map(disciplina => ({
         disciplina: disciplina._id, 
         unidade1: {}, 
         unidade2: {}, 
-        recuperacao: null,
-        mediaFinal: null
+        unidade3: {}, 
+        MFA: null, 
+        FT: 0, 
+        MFAPN: null, 
+        resumo: null 
       }))
     });
 
-    
+    // Salva o aluno no banco de dados
     await novoAluno.save();
 
+    // Retorna o sucesso com os dados do aluno
     return res.status(201).json({
       status: "success",
       data: {
-        aluno: {
-         novoAluno
-        }
+        aluno: novoAluno
       }
     });
   } catch (err) {
-    return res.status(500).json({ message: "Erro ao criar aluno", err: err.message });
+    // Retorna erro em caso de falha
+    return res.status(500).json({
+      message: "Erro ao criar aluno",
+      err: err.message
+    });
   }
 };
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
