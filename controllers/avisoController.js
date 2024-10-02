@@ -1,7 +1,7 @@
 const Aviso = require("../models/avisoModel");
 const Aluno = require("../models/alunoModel");
 const Disciplina = require("../models/disciplinaModel");
-const Turma = require("../models/turmaModel ");
+const Turma = require("../models/turmaModel");
 const mongoose = require("mongoose");
 ///////////////////////////////////////////////////////////
 

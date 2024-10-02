@@ -1,9 +1,10 @@
 const Aluno = require("../models/alunoModel");
 const Turma = require("../models/turmaModel");
-
+const mongoose = require("mongoose");
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// requer nome do aluno email senha  e turma(id ou nome)
+
+// requer nome do aluno, email, senha e turma (id ou nome)
 exports.createAluno = async (req, res) => {
   const { nome, email, senha, turma } = req.body;
 
@@ -15,23 +16,18 @@ exports.createAluno = async (req, res) => {
   }
 
   try {
-
     let turmaId;
 
-    if(mongoose.Types.ObjectId.isValid(turma)) {
+    if (mongoose.Types.ObjectId.isValid(turma)) {
       turmaId = turma;
-
-    } else{
-      let turmaQuery = Turma.findOne({ nome: turma });
-
-      if(!turmaQuery)res.status(404).json({status: "fail", message: "Turma não encontrada."});
-
-      turmaId = turmaQuery._id;
-
+    } else {
+      const turmaEncontrada = await Turma.findOne({ nome: turma });
+      if (!turmaEncontrada) {
+        return res.status(404).json({ status: "fail", message: "Turma não encontrada." });
+      }
+      turmaId = turmaEncontrada._id;
     }
 
-
-    
     const novoAluno = new Aluno({
       nome,
       email,
@@ -67,6 +63,7 @@ exports.createAluno = async (req, res) => {
     });
   }
 };
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

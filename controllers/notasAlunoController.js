@@ -1,5 +1,5 @@
 const Aluno = require("../models/alunoModel");
-const Disciplina = require("../models/disciplinaModel"); // Importa o modelo de Disciplina
+const Disciplina = require("../models/disciplinaModel"); 
 const mongoose = require("mongoose");
 
 

@@ -7,7 +7,7 @@ const alunosRouter = require("./routes/alunoRoutes");
 const disciplinasRouter = require("./routes/disciplinaRoutes");
 const avisosRouter = require("./routes/avisoRoutes");
 const turmasRouter = require("./routes/turmaRoutes");
-const notasRouter = require("./routes/notasRoutes"); 
+const notasRouter = require("./routes/notasAlunoRoutes"); 
 
 const app = express();
 
