@@ -1,12 +1,10 @@
 const Turma = require("../models/turmaModel");
 const Disciplina = require("../models/disciplinaModel");
+const mongoose = require('mongoose');
 
 ///////////////////////////////////////////////////////////
 
-const mongoose = require('mongoose');
-const Turma = require('../models/turmaModel');
-const Disciplina = require('../models/disciplinaModel');
-
+//CRIAR TURMA.. ENTRADA DE DADOS DA DISCIPLINA(NOME OU ID)
 exports.createTurma = async (req, res) => {
     const { nome, disciplinas, turno } = req.body;
 
@@ -75,6 +73,7 @@ exports.createTurma = async (req, res) => {
     }
 };
 
+///////////////////////////////////////////////////////////
 
 exports.getAllTurmas = async (req, res) => {
     try {
@@ -92,6 +91,8 @@ exports.getAllTurmas = async (req, res) => {
         });
     }
 };
+
+///////////////////////////////////////////////////////////
 
 exports.deleteTurma = async (req, res) => {
     const { id } = req.params;
